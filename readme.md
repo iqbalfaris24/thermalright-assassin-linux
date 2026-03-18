@@ -1,6 +1,7 @@
 ## Thermalright LCD Linux Driver
 
 Thermalright LCD Linux Ubuntu Driver Minimal for Thermalright Assassin X 120R Digital CPU cooler LCD.
+
 ---
 
 ## Features
