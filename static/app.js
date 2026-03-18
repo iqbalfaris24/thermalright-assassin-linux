@@ -1,113 +1,95 @@
-let config = {}
+let config = {};
 
-async function init(){
+async function init() {
+  const res = await fetch("/config");
+  config = await res.json();
 
-    const res = await fetch("/config")
-    config = await res.json()
-
-    applyConfig()
-
+  applyConfig();
 }
 
+function applyConfig() {
+  setMode(config.display_mode);
+  setUnit(config.temperature_unit);
+  setColorMode(config.color_mode || "static");
+  setColor(config.color || "ff0000");
+  setColorMode(config.color_mode || "static");
+  const slider = document.getElementById("interval");
+  const label = document.getElementById("intervalValue");
 
-
-function setMode(mode){
-    config.display_mode = mode
-
-    document.querySelectorAll("[data-mode]").forEach(b=>b.classList.remove("active"))
-    document.querySelector(`[data-mode="${mode}"]`).classList.add("active")
+  slider.value = config.alternate_interval;
+  label.innerText = config.alternate_interval + "s";
 }
 
-function setUnit(unit){
-    config.temperature_unit = unit
+function setMode(mode) {
+  config.display_mode = mode;
 
-    document.getElementById("cBtn").classList.remove("active")
-    document.getElementById("fBtn").classList.remove("active")
+  document
+    .querySelectorAll("[data-mode]")
+    .forEach((b) => b.classList.remove("active"));
 
-    if(unit === "celsius"){
-        document.getElementById("cBtn").classList.add("active")
-    } else {
-        document.getElementById("fBtn").classList.add("active")
-    }
+  document.querySelector(`[data-mode="${mode}"]`)?.classList.add("active");
 }
 
-function setActive(group, value){
-    document.querySelectorAll(group).forEach(btn=>{
-        btn.classList.remove("active")
-    })
+function setUnit(unit) {
+  config.temperature_unit = unit;
 
-    document.querySelector(`[data-${group}="${value}"]`)?.classList.add("active")
+  document.getElementById("cBtn").classList.remove("active");
+  document.getElementById("fBtn").classList.remove("active");
+
+  if (unit === "celsius") {
+    document.getElementById("cBtn").classList.add("active");
+  } else {
+    document.getElementById("fBtn").classList.add("active");
+  }
 }
 
-function applyConfig(){
+function setColorMode(mode) {
+  config.color_mode = mode;
 
-    // COLOR
-    setColor(config.color)
+  document
+    .querySelectorAll("[data-color-mode]")
+    .forEach((b) => b.classList.remove("active"));
 
-    // MODE
-    setMode(config.display_mode)
-
-    // UNIT
-    setUnit(config.temperature_unit)
-
-    // INTERVAL
-    const slider = document.getElementById("interval")
-    const label = document.getElementById("intervalValue")
-    document.getElementById("colorPicker").value = "#" + config.color
-
-    slider.value = config.alternate_interval
-    label.innerText = config.alternate_interval + "s"
-
+  document
+    .querySelector(`[data-color-mode="${mode}"]`)
+    ?.classList.add("active");
 }
 
-const slider = document.getElementById("interval")
-const label = document.getElementById("intervalValue")
-const picker = document.getElementById("colorPicker")
+function setColor(hex) {
+  config.color = hex;
 
-picker.addEventListener("input", (e)=>{
+  const value = document.getElementById("lcdValue");
 
-    let hex = e.target.value  // "#ff0000"
+  value.style.color = "#" + hex;
+  value.style.textShadow = "0 0 10px #" + hex;
 
-    hex = hex.replace("#","") // "ff0000"
-
-    setColor(hex)
-
-})
-
-slider.addEventListener("input", ()=>{
-    label.innerText = slider.value + "s"
-    config.alternate_interval = parseInt(slider.value)
-})
-
-function setColor(hex){
-
-    // simpan ke config TANPA #
-    config.color = hex.toLowerCase()
-
-    const el = document.querySelector(".value")
-
-    // tampilkan pakai #
-    el.style.color = "#" + hex
-
-    el.style.textShadow = `
-        0 0 5px #${hex},
-        0 0 10px #${hex},
-        0 0 20px #${hex}
-    `
+  document.getElementById("colorPicker").value = "#" + hex;
 }
 
-async function save(){
-    config.alternate_interval = parseInt(
-        document.getElementById("interval").value
-    )
+const slider = document.getElementById("interval");
 
-    await fetch("/config",{
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body: JSON.stringify(config)
-    })
+if (slider) {
+  slider.addEventListener("input", () => {
+    const label = document.getElementById("intervalValue");
 
-    alert("Saved")
+    label.innerText = slider.value + "s";
+
+    config.alternate_interval = parseInt(slider.value);
+  });
 }
 
-init()
+async function save() {
+  await fetch("/config", {
+    method: "POST",
+
+    headers: {
+      "Content-Type": "application/json",
+    },
+
+    body: JSON.stringify(config),
+  });
+
+  alert("Saved");
+}
+
+window.addEventListener("DOMContentLoaded", init);

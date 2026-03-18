@@ -19,34 +19,76 @@ digit_map = [
     {"a":23,"b":24,"c":25,"d":26,"e":27,"f":28,"g":29},
 ]
 
-
 def blank_frame():
     return ["000000"] * NUMBER_OF_LEDS
 
+def get_temp_color(temp, color_map):
+    try:
+        temp = int(temp)
+    except:
+        temp = 0
 
-def draw_digit(frame, pos, num):
-    for seg in digit_segments[num]:
-        frame[digit_map[pos][seg]] = "ffffff"
+    for item in color_map:
+        if temp <= item["max"]:
+            c = item.get("color","ffffff")
+            if isinstance(c,str) and len(c) == 6:
+                return c.lower()
 
+    return "ffffff"
+
+def sanitize_color(color):
+    if not isinstance(color,str):
+        return "ffffff"
+
+    color = color.lower().replace("#","")
+
+    if len(color) == 3:
+        color = "".join([c*2 for c in color])
+
+    if len(color) != 6:
+        return "ffffff"
+
+    try:
+        int(color,16)
+    except:
+        return "ffffff"
+
+    return color
 
 def render_value(value, mode="cpu", unit="celsius", color="ffffff", is_usage=False, hide_leading_zero=True):
+
     frame = ["000000"] * NUMBER_OF_LEDS
 
-    value = min(value, 999)
+    try:
+        value = int(value)
+    except:
+        value = 0
+
+    if value < 0:
+        value = 0
+    if value > 999:
+        value = 999
+
+    color = sanitize_color(color)
+
     digits = f"{value:03}"
 
-    for i, d in enumerate(digits):
-        if d != "0" or i == 2:
-            for seg in digit_segments[int(d)]:
-                frame[digit_map[i][seg]] = color
+    for i,d in enumerate(digits):
 
-    # indicator
+        if hide_leading_zero and i < 2 and d == "0":
+            continue
+
+        segs = digit_segments[int(d)]
+
+        for seg in segs:
+            idx = digit_map[i][seg]
+            frame[idx] = color
+
     if mode == "cpu":
         frame[2] = color
     elif mode == "gpu":
         frame[4] = color
 
-    # unit / percent
     if is_usage:
         frame[8] = color
     else:

@@ -1,6 +1,29 @@
 {
     "alternate_interval": 3,
-    "color": "cdff00",
-    "display_mode": "cpu",
+    "color": "00ff00",
+    "color_mode": "temperature",
+    "display_mode": "alternate",
+    "temp_color_map": [
+        {
+            "color": "00ffff",
+            "max": 30
+        },
+        {
+            "color": "00ff00",
+            "max": 50
+        },
+        {
+            "color": "ffff00",
+            "max": 70
+        },
+        {
+            "color": "ff8800",
+            "max": 90
+        },
+        {
+            "color": "ff0000",
+            "max": 999
+        }
+    ],
     "temperature_unit": "celsius"
 }

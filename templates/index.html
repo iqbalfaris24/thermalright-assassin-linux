@@ -1,78 +1,109 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-    <head>
-        <title>TRCC</title>
-        <link rel="stylesheet" href="/static/style.css">
-    </head>
-  
-    <body>
+  <head>
+    <title>TRCC</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
 
-        <div class="header">
-            TRCC
+  <body>
+    <div class="header">TRCC</div>
+
+    <div class="container">
+      <div class="panel lcd">
+        <div class="lcd-box">
+          <div class="labels">
+            <span>CPU</span>
+            <span class="gpu">GPU</span>
+          </div>
+          <div id="lcdValue" class="value">85</div>
+          <div class="units">
+            <span id="unitC">°C</span>
+            <span id="unitF">°F</span>
+            <span>%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel control-panel">
+        <div class="setting-group">
+          <h3>Color Mode</h3>
+          <div class="temp-legend">
+            <span style="background: #00ffff"></span><30
+            <span style="background: #00ff00"></span><50
+            <span style="background: #ffff00"></span><70
+            <span style="background: #ff8800"></span><90
+            <span style="background: #ff0000"></span>90+
+          </div>
+          <br />
+          <div class="color-modes">
+            <button data-color-mode="static" onclick="setColorMode('static')">
+              Static
+            </button>
+            <button
+              data-color-mode="temperature"
+              onclick="setColorMode('temperature')"
+            >
+              According to temperature
+            </button>
+          </div>
+          <br />
+          <div class="color-input">
+            <input type="color" id="colorPicker" />
+            <div class="presets">
+              <div
+                style="background: #ff0000"
+                onclick="setColor('ff0000')"
+              ></div>
+              <div
+                style="background: #00ff00"
+                onclick="setColor('00ff00')"
+              ></div>
+              <div
+                style="background: #0000ff"
+                onclick="setColor('0000ff')"
+              ></div>
+              <div
+                style="background: #ffffff"
+                onclick="setColor('ffffff')"
+              ></div>
+            </div>
+          </div>
         </div>
 
-        <div class="container">
-
-            <!-- LCD Preview -->
-            <div class="panel lcd">
-                <div class="lcd-box">
-                    <div class="labels">
-                        <span>CPU</span>
-                        <span class="gpu">GPU</span>
-                    </div>
-
-                    <div id="lcdValue" class="value">85</div>
-
-                    <div class="units">
-                        <span id="unitC">°C</span>
-                        <span>°F</span>
-                        <span>%</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Controls -->
-            <div class="panel control">
-
-                <h3>Color</h3>
-
-                <input type="color" id="colorPicker">
-
-                <div class="presets">
-                    <div style="background:#ff0000" onclick="setColor('ff0000')"></div>
-                    <div style="background:#00ff00" onclick="setColor('00ff00')"></div>
-                    <div style="background:#0000ff" onclick="setColor('0000ff')"></div>
-                    <div style="background:#ffffff" onclick="setColor('ffffff')"></div>
-                </div>
-
-                <h3>Mode</h3>
-
-                <div class="modes">
-                    <button data-mode="cpu" onclick="setMode('cpu')">°CPU</button>
-                    <button data-mode="gpu" onclick="setMode('gpu')">°GPU</button>
-                    <button data-mode="alternate" onclick="setMode('alternate')">°ALT</button>
-                    <button data-mode="cpu_usage" onclick="setMode('cpu_usage')">CPU USAGE</button>
-                </div>
-
-                <h3>Unit</h3>
-
-                <div class="unit-toggle">
-                    <div id="cBtn" onclick="setUnit('celsius')">°C</div>
-                    <div id="fBtn" onclick="setUnit('fahrenheit')">°F</div>
-                </div>
-
-                <h3>Interval</h3>
-                <div class="slider-box">
-                    <input id="interval" type="range" min="1" max="10">
-                    <span id="intervalValue">3s</span>
-                </div>
-
-                <button class="save" onclick="save()">SAVE</button>
-
-            </div>
-
+        <div class="setting-group">
+          <h3>Mode</h3>
+          <div class="modes">
+            <button data-mode="cpu" onclick="setMode('cpu')">CPU</button>
+            <button data-mode="gpu" onclick="setMode('gpu')">GPU</button>
+            <button data-mode="alternate" onclick="setMode('alternate')">
+              ALT
+            </button>
+            <button data-mode="cpu_usage" onclick="setMode('cpu_usage')">
+              USAGE
+            </button>
+          </div>
         </div>
 
-        <script src="/static/app.js"></script>
-    </body>
+        <div class="setting-group">
+          <h3>Unit</h3>
+          <div class="unit-toggle">
+            <div id="cBtn" onclick="setUnit('celsius')">°C</div>
+            <div id="fBtn" onclick="setUnit('fahrenheit')">°F</div>
+          </div>
+        </div>
+
+        <div class="setting-group">
+          <h3>Interval</h3>
+          <div class="slider-box">
+            <input id="interval" type="range" min="1" max="10" />
+            <span id="intervalValue">3s</span>
+          </div>
+        </div>
+
+        <button class="save" onclick="save()">SAVE</button>
+      </div>
+    </div>
+
+    <script src="/static/app.js"></script>
+  </body>
 </html>
