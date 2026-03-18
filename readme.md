@@ -1,21 +1,14 @@
 ## Thermalright LCD Linux Driver
 
-Minimal Linux driver for Thermalright Assassin X 120R Digital CPU cooler LCD.
-This project was built from scratch by reverse engineering the HID protocol used by the device.
-
-* CPU temperature
-* GPU temperature
-* Alternating temperature display mode
-* CPU Usage
-
+Thermalright LCD Linux Ubuntu Driver Minimal for Thermalright Assassin X 120R Digital CPU cooler LCD.
 ---
 
 ## Features
 
 * Display **CPU temperature**
 * Display **GPU temperature**
-* **Alternating temperature display**
-* **CPU usage mode**
+* Display **Alternating temperature**
+* Display **CPU usage mode**
 * **Web UI controller**
 * Configurable display settings
 * Automatic **systemd service**
@@ -48,6 +41,7 @@ Once saved, the configuration updates automatically without restarting the servi
 Default address:
 
 http://localhost:5000
+*Port can be changed in the app.py file
 
 ---
 
