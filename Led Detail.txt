@@ -1,0 +1,34 @@
+
+led 0 mati
+led 1 mati
+led 2 cpu text
+led 3 mati
+led 4 GPU text
+led 5 mati
+led 6 celcius
+led 7 frenheit
+led 8 persen
+led 9  → digit1  segment a (atas)
+led 10 → digit1 segment b (kanan atas)
+led 11 → digit1 segment c (kanan bawah)
+led 12 → digit1 segment d (bawah)
+led 13 → digit1 segment e (kiri bawah)
+led 14 → digit1 segment f (kiri atas)
+led 15 → digit1 segment g (tengah)
+
+led 16 → digit2 segment a (atas)
+led 17 → digit2 segment b (kanan atas)  
+led 18 → digit2 segment c (kanan bawah) 
+led 19 → digit2 segment d (bawah)
+led 20 → digit2 segment e (kiri bawah) 
+led 21 → digit2 segment f (kiri atas)  
+led 22 → digit2 segment g (tengah)
+
+
+led 23 → digit3 segment a (atas) 
+led 24 → digit3 segment b (kanan atas)  
+led 25 → digit3 segment c (kanan bawah) 
+led 26 → digit3 segment d (bawah)
+led 27 → digit3 segment e (kiri bawah) 
+led 28 → digit3 segment f (kiri atas)  
+led 29 → digit3 segment g (tengah)

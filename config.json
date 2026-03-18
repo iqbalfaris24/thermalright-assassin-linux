@@ -1,0 +1,8 @@
+{
+    "display_mode": "alternate",
+    "alternate_interval": 2,
+    "temperature_unit": "celsius",
+    "color": "cdff00",
+    "cpu_sensor": "k10temp",
+    "gpu_sensor": "amdgpu"
+}
