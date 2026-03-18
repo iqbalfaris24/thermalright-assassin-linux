@@ -6,23 +6,23 @@ Thermalright LCD Linux Ubuntu Driver Minimal for Thermalright Assassin X 120R Di
 
 ## Features
 
-* Display **CPU temperature**
-* Display **GPU temperature**
-* Display **Alternating temperature**
-* Display **CPU usage mode**
-* **Web UI controller**
-* Configurable display settings
-* Automatic **systemd service**
-* **Auto reconnect** if device not ready during boot
-* Lightweight and modular architecture
+- Display **CPU temperature**
+- Display **GPU temperature**
+- Display **Alternating temperature**
+- Display **CPU usage mode**
+- **Web UI controller**
+- Configurable display settings
+- Automatic **systemd service**
+- **Auto reconnect** if device not ready during boot
+- Lightweight and modular architecture
 
 ---
 
 ## Currently tested with:
 
-* **Cooler:** Thermalright Assassin X 120R Digital
-* **CPU:** AMD Ryzen
-* **GPU:** AMD Radeon
+- **Cooler:** Thermalright Assassin X 120R Digital
+- **CPU:** AMD Ryzen
+- **GPU:** AMD Radeon
 
 ---
 
@@ -32,17 +32,17 @@ A simple web interface is included for controlling the display settings.
 
 The Web UI allows you to change:
 
-* Display mode
-* Temperature unit
-* Alternate interval
-* LED color
+- Display mode
+- Temperature unit
+- Alternate interval
+- LED color
 
 Once saved, the configuration updates automatically without restarting the service.
 
 Default address:
 
 http://localhost:5000
-*Port can be changed in the app.py file
+\*Port can be changed in the app.py file
 
 ---
 
@@ -75,11 +75,11 @@ chmod +x install.sh
 
 The installer will automatically:
 
-* Create Python virtual environment
-* Install dependencies
-* Install systemd service
-* Install udev rules
-* Enable auto start at boot
+- Create Python virtual environment
+- Install dependencies
+- Install systemd service
+- Install udev rules
+- Enable auto start at boot
 
 ---
 
@@ -113,7 +113,6 @@ View logs:
 journalctl -u thermalright-lcd -f
 ```
 
-
 ---
 
 ## CONFIGURATION
@@ -137,6 +136,7 @@ Example configuration:
 Configuration changes made from the Web UI are automatically applied without restarting the service.
 
 ---
+
 ## Acknowledgements
 
 Special thanks to the project below which helped provide insight into the device communication protocol:
@@ -144,14 +144,14 @@ Special thanks to the project below which helped provide insight into the device
 https://github.com/raffa0001/Peerless_assassin_and_CLI_UI
 
 ---
+
 ## FUTURE IDEAS
 
 Possible improvements:
 
-* Temperature based LED color gradient
-* LCD brightness control
-* Clock display mode
-* GPU usage mode
+- LCD brightness control
+- Clock display mode
+- GPU usage mode
 
 ---
 
