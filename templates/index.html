@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TRCC</title>
+        <link rel="stylesheet" href="/static/style.css">
+    </head>
+  
+    <body>
+
+        <div class="header">
+            TRCC
+        </div>
+
+        <div class="container">
+
+            <!-- LCD Preview -->
+            <div class="panel lcd">
+                <div class="lcd-box">
+                    <div class="labels">
+                        <span>CPU</span>
+                        <span class="gpu">GPU</span>
+                    </div>
+
+                    <div id="lcdValue" class="value">85</div>
+
+                    <div class="units">
+                        <span id="unitC">°C</span>
+                        <span>°F</span>
+                        <span>%</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="panel control">
+
+                <h3>Color</h3>
+
+                <input type="color" id="colorPicker">
+
+                <div class="presets">
+                    <div style="background:#ff0000" onclick="setColor('ff0000')"></div>
+                    <div style="background:#00ff00" onclick="setColor('00ff00')"></div>
+                    <div style="background:#0000ff" onclick="setColor('0000ff')"></div>
+                    <div style="background:#ffffff" onclick="setColor('ffffff')"></div>
+                </div>
+
+                <h3>Mode</h3>
+
+                <div class="modes">
+                    <button data-mode="cpu" onclick="setMode('cpu')">°CPU</button>
+                    <button data-mode="gpu" onclick="setMode('gpu')">°GPU</button>
+                    <button data-mode="alternate" onclick="setMode('alternate')">°ALT</button>
+                    <button data-mode="cpu_usage" onclick="setMode('cpu_usage')">CPU USAGE</button>
+                </div>
+
+                <h3>Unit</h3>
+
+                <div class="unit-toggle">
+                    <div id="cBtn" onclick="setUnit('celsius')">°C</div>
+                    <div id="fBtn" onclick="setUnit('fahrenheit')">°F</div>
+                </div>
+
+                <h3>Interval</h3>
+                <div class="slider-box">
+                    <input id="interval" type="range" min="1" max="10">
+                    <span id="intervalValue">3s</span>
+                </div>
+
+                <button class="save" onclick="save()">SAVE</button>
+
+            </div>
+
+        </div>
+
+        <script src="/static/app.js"></script>
+    </body>
+</html>

@@ -1,0 +1,154 @@
+body {
+    margin:0;
+    font-family:sans-serif;
+    background:#111;
+    color:white;
+}
+
+.header {
+    background:#8c7344;
+    padding:10px;
+    font-weight:bold;
+}
+
+.container {
+    display:flex;
+    gap:20px;
+    padding:20px;
+}
+
+.panel {
+    background:#1e1e1e;
+    padding:20px;
+    border-radius:10px;
+}
+
+.lcd {
+    width:250px;
+}
+
+.lcd-box {
+    background:black;
+    height:200px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+}
+
+.labels {
+    position:absolute;
+    top:10px;
+    left:10px;
+}
+
+.gpu {
+    opacity:0.3;
+    margin-left:10px;
+}
+
+.value {
+    font-size:60px;
+    color:red;
+    text-shadow:0 0 10px red;
+}
+
+.units {
+    position: absolute;
+    right: 10px;
+    top: 70px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px; 
+}
+
+.control {
+    flex:1;
+}
+
+.presets div {
+    width:30px;
+    height:30px;
+    display:inline-block;
+    margin:5px;
+    cursor:pointer;
+}
+
+.modes button {
+    margin:5px;
+    padding:10px 14px;
+    background:#2a2a2a;
+    border:1px solid #3a3a3a;
+    color:#aaa;
+    cursor:pointer;
+    border-radius:6px;
+    transition:all 0.2s ease;
+}
+
+/* hover */
+.modes button:hover {
+    background:#3a3a3a;
+    color:white;
+}
+
+/* active */
+.modes button.active {
+    background:#8c7344;
+    color:black;
+    border-color:#bda165;
+    box-shadow:0 0 10px rgba(189,161,101,0.5);
+}
+
+.save {
+    margin-top:20px;
+    padding:10px;
+    width:100%;
+    background:#8c7344;
+    border:none;
+    cursor:pointer;
+}
+
+.save:hover {
+    background:#bda165;
+    transform:scale(1.02);
+}
+
+.unit-toggle {
+    display:flex;
+    background:#2a2a2a;
+    border-radius:6px;
+    overflow:hidden;
+    width:80px;
+}
+
+.unit-toggle div {
+    flex:1;
+    text-align:center;
+    padding:8px;
+    cursor:pointer;
+    color:#aaa;
+    transition:0.2s;
+}
+
+.unit-toggle div.active {
+    background:#8c7344;
+    color:black;
+}
+
+.slider-box {
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+input[type=range] {
+    flex:1;
+    accent-color:#8c7344;
+    cursor:pointer;
+}
+
+#intervalValue {
+    width:40px;
+    text-align:right;
+}
