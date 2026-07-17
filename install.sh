@@ -35,7 +35,7 @@ fi
 echo "Installing dependencies..."
 
 "$VENV_DIR/bin/pip" install --upgrade pip
-"$VENV_DIR/bin/pip" install hidapi psutil
+"$VENV_DIR/bin/pip" install hid psutil flask
 
 # ----------------------------
 # create udev rule
