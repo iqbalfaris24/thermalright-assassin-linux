@@ -525,11 +525,11 @@ function App() {
                 {/* Download */}
                 <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-[#1a2333] border border-slate-200/60 dark:border-slate-700/60">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-2">
                       <div className="p-1 rounded-md bg-emerald-500/10 text-emerald-500 dark:bg-emerald-500/20">
                         <FiArrowDown className="text-xs font-black" />
                       </div>
-                      <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">Down</span>
+                      <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">Download</span>
                     </div>
                     <span className="text-sm font-black font-mono text-emerald-600 dark:text-emerald-400 whitespace-nowrap">
                       {status.network?.download_speed || "0.0 KB/s"}
@@ -540,11 +540,11 @@ function App() {
                 {/* Upload */}
                 <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-[#1a2333] border border-slate-200/60 dark:border-slate-700/60">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-2">
                       <div className="p-1 rounded-md bg-cyan-500/10 text-cyan-500 dark:bg-cyan-500/20">
                         <FiArrowUp className="text-xs font-black" />
                       </div>
-                      <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">Up</span>
+                      <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">Upload</span>
                     </div>
                     <span className="text-sm font-black font-mono text-cyan-600 dark:text-cyan-400 whitespace-nowrap">
                       {status.network?.upload_speed || "0.0 KB/s"}
