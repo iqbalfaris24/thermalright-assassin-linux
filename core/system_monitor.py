@@ -12,6 +12,97 @@ except ImportError:
     cpuinfo = None
 
 _system_info_cache = {}
+_net_io_last = {}
+_net_io_time = 0
+
+
+def get_network_status():
+    """Menghitung kecepatan Upload/Download realtime (KB/s, MB/s) dan total data I/O"""
+    global _net_io_last, _net_io_time
+
+    now = time.time()
+    current_io = psutil.net_io_counters(pernic=True)
+    dt = now - _net_io_time if _net_io_time > 0 else 1.0
+
+    interfaces = []
+    total_up_speed = 0.0
+    total_down_speed = 0.0
+    total_sent_bytes = 0
+    total_recv_bytes = 0
+
+    # Dapatkan IP addresses per interface
+    addrs = {}
+    try:
+        for iface, addr_list in psutil.net_if_addrs().items():
+            ipv4_list = [a.address for a in addr_list if getattr(a.family, 'name', '') in ['AF_INET', '2'] or str(a.family) == '2' or a.family == 2]
+            if ipv4_list:
+                addrs[iface] = ipv4_list[0]
+    except Exception:
+        pass
+
+    # Filter interface yang relevan (utamakan physical ethernet, wifi, tailscale, dan agregat)
+    ignored_prefixes = ('veth', 'br-', 'docker')
+
+    for iface, data in current_io.items():
+        if iface == 'lo':
+            continue
+
+        sent_rate = 0.0
+        recv_rate = 0.0
+
+        if iface in _net_io_last and dt > 0:
+            last_sent, last_recv = _net_io_last[iface]
+            sent_rate = max(0.0, (data.bytes_sent - last_sent) / dt)
+            recv_rate = max(0.0, (data.bytes_recv - last_recv) / dt)
+
+        # Hanya jumlahkan interface utama non-virtual container ke total
+        if not iface.startswith(ignored_prefixes):
+            total_up_speed += sent_rate
+            total_down_speed += recv_rate
+            total_sent_bytes += data.bytes_sent
+            total_recv_bytes += data.bytes_recv
+
+        # Masukkan ke daftar interface jika memiliki traffic atau memiliki IPv4
+        ip = addrs.get(iface, '')
+        if ip or data.bytes_sent > 1024 * 1024 or data.bytes_recv > 1024 * 1024 or not iface.startswith(ignored_prefixes):
+            interfaces.append({
+                'name': iface,
+                'ip': ip,
+                'is_virtual': iface.startswith(ignored_prefixes),
+                'up_speed_kb': round(sent_rate / 1024.0, 1),
+                'down_speed_kb': round(recv_rate / 1024.0, 1),
+                'total_sent_mb': round(data.bytes_sent / (1024.0**2), 1),
+                'total_recv_mb': round(data.bytes_recv / (1024.0**2), 1),
+            })
+
+    # Simpan state untuk delta berikutnya
+    _net_io_last = {iface: (d.bytes_sent, d.bytes_recv) for iface, d in current_io.items()}
+    _net_io_time = now
+
+    # Sort interface: physical / non-virtual lebih dahulu
+    interfaces.sort(key=lambda x: (x['is_virtual'], 0 if x['ip'] else 1, x['name']))
+
+    def format_speed(bps):
+        kbps = bps / 1024.0
+        if kbps >= 1024:
+            return f"{(kbps / 1024.0):.2f} MB/s"
+        return f"{kbps:.1f} KB/s"
+
+    def format_bytes(b):
+        gb = b / (1024.0**3)
+        if gb >= 1.0:
+            return f"{gb:.2f} GB"
+        return f"{(b / (1024.0**2)):.1f} MB"
+
+    return {
+        'upload_speed': format_speed(total_up_speed),
+        'download_speed': format_speed(total_down_speed),
+        'upload_speed_kb': round(total_up_speed / 1024.0, 1),
+        'download_speed_kb': round(total_down_speed / 1024.0, 1),
+        'total_sent': format_bytes(total_sent_bytes),
+        'total_recv': format_bytes(total_recv_bytes),
+        'interfaces': interfaces[:6]  # Ambil top interface utama
+    }
 
 
 def get_cpu_info():
@@ -244,9 +335,10 @@ def get_full_system_status():
     # Root Disk
     root_disk = psutil.disk_usage('/')
 
-    # All Partitions & GPU
+    # All Partitions & GPU & Network
     all_disks = get_all_storage_disks()
     gpu = get_gpu_status()
+    net = get_network_status()
     os_info = get_os_info()
     uptime = get_uptime_data()
     processor = get_cpu_info()
@@ -265,6 +357,7 @@ def get_full_system_status():
             'per_core': [round(p, 1) for p in cpu_percent_per_core],
         },
         'gpu': gpu,
+        'network': net,
         'memory': {
             'percent': round(mem.percent, 1),
             'total': f"{(mem.total / (1024**3)):.2f}",

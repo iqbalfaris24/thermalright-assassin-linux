@@ -14,6 +14,10 @@ import {
   FiActivity,
   FiLayers,
   FiZap,
+  FiArrowUp,
+  FiArrowDown,
+  FiGlobe,
+  FiWifi,
 } from "react-icons/fi";
 import { SiAmd, SiLinux } from "react-icons/si";
 
@@ -60,6 +64,15 @@ function App() {
       total: 0,
       used: 0,
       free: 0,
+    },
+    network: {
+      upload_speed: "0.0 KB/s",
+      download_speed: "0.0 KB/s",
+      upload_speed_kb: 0,
+      download_speed_kb: 0,
+      total_sent: "0 MB",
+      total_recv: "0 MB",
+      interfaces: [],
     },
     disks: [],
     system_info: {
@@ -300,43 +313,43 @@ function App() {
             </div>
           </section>
 
-          {/* Section 2: Core Hardware Metrics (CPU, GPU, Memory) */}
-          <section className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+          {/* Section 2: Core Hardware Metrics (CPU, GPU, Memory, Network) */}
+          <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
             
             {/* CPU Status Card */}
-            <div className="bg-white dark:bg-[#111827] rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+            <div className="bg-white dark:bg-[#111827] rounded-2xl p-4.5 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+              <div className="flex items-center justify-between pb-2.5 border-b border-slate-100 dark:border-slate-800">
                 <div className="flex items-center gap-2">
                   <FiCpu className="text-indigo-500 text-lg" />
                   <h3 className="font-bold text-base text-slate-900 dark:text-slate-100">CPU Status</h3>
                 </div>
-                <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800">
+                <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800 font-mono">
                   {status.cpu.current} GHz
                 </span>
               </div>
 
-              <div className="flex items-center gap-4 my-4 justify-around">
-                <div className="relative w-28 h-28 shrink-0">
+              <div className="flex items-center gap-3 my-3">
+                <div className="relative w-20 h-20 shrink-0">
                   <Doughnut data={cpuData} options={options} />
                   <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                    <span className="text-2xl font-black text-slate-900 dark:text-white">{cpuPercent}%</span>
-                    <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-semibold">Load</span>
+                    <span className="text-lg font-black text-slate-900 dark:text-white">{cpuPercent}%</span>
+                    <span className="text-[8px] text-slate-500 dark:text-slate-400 uppercase font-semibold">Load</span>
                   </div>
                 </div>
 
-                <div className="w-full text-xs space-y-2 font-medium">
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-500 dark:text-slate-400">Temperature</span>
-                    <span className="font-bold text-amber-500 font-mono text-sm">{status.cpu.temperature}°C</span>
+                <div className="w-full text-xs space-y-1.5 font-medium min-w-0">
+                  <div className="flex justify-between items-center gap-1.5">
+                    <span className="text-slate-500 dark:text-slate-400 shrink-0">Temp:</span>
+                    <span className="font-bold text-amber-500 font-mono text-xs whitespace-nowrap">{status.cpu.temperature}°C</span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-500 dark:text-slate-400">Clock Speed</span>
-                    <span className="font-bold font-mono text-slate-800 dark:text-slate-200">{status.cpu.current} GHz</span>
+                  <div className="flex justify-between items-center gap-1.5">
+                    <span className="text-slate-500 dark:text-slate-400 shrink-0">Speed:</span>
+                    <span className="font-bold font-mono text-slate-800 dark:text-slate-200 text-xs whitespace-nowrap">{status.cpu.current} GHz</span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-500 dark:text-slate-400">Load Average</span>
-                    <span className="font-bold font-mono text-[11px] text-slate-800 dark:text-slate-200">
-                      {status.cpu.load_avg ? status.cpu.load_avg.join(", ") : "-"}
+                  <div className="flex justify-between items-center gap-1.5">
+                    <span className="text-slate-500 dark:text-slate-400 shrink-0">Load Avg:</span>
+                    <span className="font-bold font-mono text-[9px] text-slate-800 dark:text-slate-200 whitespace-nowrap" title={status.cpu.load_avg ? status.cpu.load_avg.join(", ") : ""}>
+                      {status.cpu.load_avg ? `${status.cpu.load_avg[0]}, ${status.cpu.load_avg[1]}, ${status.cpu.load_avg[2]}` : "-"}
                     </span>
                   </div>
                 </div>
@@ -344,16 +357,16 @@ function App() {
 
               {/* 12-Core Multi-Thread Visualizer */}
               {status.cpu.per_core && status.cpu.per_core.length > 0 && (
-                <div className="pt-3 border-t border-slate-100 dark:border-slate-800">
-                  <div className="flex justify-between items-center mb-1.5">
-                    <span className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider">
-                      Thread Activity ({status.cpu.per_core.length} Cores)
+                <div className="pt-2.5 border-t border-slate-100 dark:border-slate-800">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-[9px] text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider">
+                      Thread Activity ({status.cpu.per_core.length}T)
                     </span>
                   </div>
                   <div className="grid grid-cols-6 gap-1">
                     {status.cpu.per_core.map((load, idx) => (
                       <div key={idx} className="flex flex-col items-center" title={`Core ${idx + 1}: ${load}%`}>
-                        <div className="w-full bg-slate-100 dark:bg-slate-800 h-7 rounded-sm overflow-hidden flex flex-col justify-end p-0.5 border border-slate-200/50 dark:border-slate-700/50">
+                        <div className="w-full bg-slate-100 dark:bg-slate-800 h-6 rounded-xs overflow-hidden flex flex-col justify-end p-0.5 border border-slate-200/50 dark:border-slate-700/50">
                           <div
                             className={`w-full rounded-xs transition-all duration-300 ${
                               load > 80 ? "bg-rose-500" : load > 50 ? "bg-amber-500" : "bg-emerald-500"
@@ -361,7 +374,7 @@ function App() {
                             style={{ height: `${Math.max(load, 8)}%` }}
                           />
                         </div>
-                        <span className="text-[8px] font-mono text-slate-500 dark:text-slate-400 mt-0.5 font-bold">C{idx + 1}</span>
+                        <span className="text-[7px] font-mono text-slate-500 dark:text-slate-400 mt-0.5 font-bold">C{idx + 1}</span>
                       </div>
                     ))}
                   </div>
@@ -370,48 +383,48 @@ function App() {
             </div>
 
             {/* GPU Status Card */}
-            <div className="bg-white dark:bg-[#111827] rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+            <div className="bg-white dark:bg-[#111827] rounded-2xl p-4.5 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+              <div className="flex items-center justify-between pb-2.5 border-b border-slate-100 dark:border-slate-800">
                 <div className="flex items-center gap-2">
                   <FiZap className="text-purple-500 text-lg" />
                   <h3 className="font-bold text-base text-slate-900 dark:text-slate-100">GPU Status</h3>
                 </div>
-                <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-purple-50 text-purple-600 dark:bg-purple-950/60 dark:text-purple-400 border border-purple-200 dark:border-purple-800">
+                <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-purple-50 text-purple-600 dark:bg-purple-950/60 dark:text-purple-400 border border-purple-200 dark:border-purple-800 font-mono">
                   {status.gpu?.vendor || "AMD"}
                 </span>
               </div>
 
-              <div className="flex items-center gap-4 my-4 justify-around">
-                <div className="relative w-28 h-28 shrink-0">
+              <div className="flex items-center gap-3 my-3">
+                <div className="relative w-20 h-20 shrink-0">
                   <Doughnut data={gpuData} options={options} />
                   <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                    <span className="text-2xl font-black text-slate-900 dark:text-white">{gpuPercent}%</span>
-                    <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-semibold">GPU Load</span>
+                    <span className="text-lg font-black text-slate-900 dark:text-white">{gpuPercent}%</span>
+                    <span className="text-[8px] text-slate-500 dark:text-slate-400 uppercase font-semibold">Load</span>
                   </div>
                 </div>
 
-                <div className="w-full text-xs space-y-2 font-medium">
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-500 dark:text-slate-400">Model</span>
-                    <span className="font-bold text-slate-800 dark:text-slate-200 truncate max-w-[130px]" title={status.gpu?.name}>
-                      {status.gpu?.name ? status.gpu.name.replace("Advanced Micro Devices, Inc. [AMD/ATI] ", "") : "AMD Radeon RX 580"}
+                <div className="w-full text-xs space-y-1.5 font-medium min-w-0">
+                  <div className="flex justify-between items-center gap-1.5">
+                    <span className="text-slate-500 dark:text-slate-400 shrink-0">Model:</span>
+                    <span className="font-bold text-slate-800 dark:text-slate-200 truncate text-[11px]" title={status.gpu?.name}>
+                      RX 580 Series
                     </span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-500 dark:text-slate-400">Temperature</span>
-                    <span className="font-bold text-purple-600 dark:text-purple-400 font-mono text-sm">
+                  <div className="flex justify-between items-center gap-1.5">
+                    <span className="text-slate-500 dark:text-slate-400 shrink-0">Temp:</span>
+                    <span className="font-bold text-purple-600 dark:text-purple-400 font-mono text-xs whitespace-nowrap">
                       {status.gpu?.temperature || "0"}°C
                     </span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-500 dark:text-slate-400">Engine Clock</span>
-                    <span className="font-bold font-mono text-slate-800 dark:text-slate-200">
+                  <div className="flex justify-between items-center gap-1.5">
+                    <span className="text-slate-500 dark:text-slate-400 shrink-0">Clock:</span>
+                    <span className="font-bold font-mono text-slate-800 dark:text-slate-200 text-xs whitespace-nowrap">
                       {status.gpu?.clock_mhz ? `${status.gpu.clock_mhz} MHz` : "Dynamic"}
                     </span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-500 dark:text-slate-400">Power Draw</span>
-                    <span className="font-bold font-mono text-amber-500">
+                  <div className="flex justify-between items-center gap-1.5">
+                    <span className="text-slate-500 dark:text-slate-400 shrink-0">Power:</span>
+                    <span className="font-bold font-mono text-amber-500 text-xs whitespace-nowrap">
                       {status.gpu?.power_watts ? `${status.gpu.power_watts} W` : "-"}
                     </span>
                   </div>
@@ -419,12 +432,12 @@ function App() {
               </div>
 
               {/* VRAM / Memory Busy Progress */}
-              <div className="pt-3 border-t border-slate-100 dark:border-slate-800 text-xs">
+              <div className="pt-2.5 border-t border-slate-100 dark:border-slate-800 text-xs">
                 <div className="flex justify-between items-center mb-1">
-                  <span className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider">
+                  <span className="text-[9px] text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider">
                     VRAM Controller Load
                   </span>
-                  <span className="font-mono text-[11px] font-bold text-purple-600 dark:text-purple-400">
+                  <span className="font-mono text-[10px] font-bold text-slate-700 dark:text-slate-300">
                     {status.gpu?.memory_percent || 0}%
                   </span>
                 </div>
@@ -438,52 +451,52 @@ function App() {
             </div>
 
             {/* Memory & Swap Card */}
-            <div className="bg-white dark:bg-[#111827] rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+            <div className="bg-white dark:bg-[#111827] rounded-2xl p-4.5 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+              <div className="flex items-center justify-between pb-2.5 border-b border-slate-100 dark:border-slate-800">
                 <div className="flex items-center gap-2">
                   <FiLayers className="text-blue-500 text-lg" />
                   <h3 className="font-bold text-base text-slate-900 dark:text-slate-100">Memory Status</h3>
                 </div>
-                <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
-                  {status.memory.total} GB Total
+                <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 dark:bg-blue-950/60 dark:text-blue-400 border border-blue-200 dark:border-blue-800 font-mono">
+                  {status.memory.percent}% Used
                 </span>
               </div>
 
-              <div className="flex items-center gap-4 my-4 justify-around">
-                <div className="relative w-28 h-28 shrink-0">
+              <div className="flex items-center gap-3 my-3">
+                <div className="relative w-20 h-20 shrink-0">
                   <Doughnut data={memoryData} options={options} />
                   <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                    <span className="text-2xl font-black text-slate-900 dark:text-white">{memoryPercent}%</span>
-                    <span className="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-semibold">RAM Used</span>
+                    <span className="text-lg font-black text-slate-900 dark:text-white">{status.memory.percent}%</span>
+                    <span className="text-[8px] text-slate-500 dark:text-slate-400 uppercase font-semibold">RAM</span>
                   </div>
                 </div>
 
-                <div className="w-full text-xs space-y-2 font-medium">
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-500 dark:text-slate-400">Used RAM</span>
-                    <span className="font-bold font-mono text-slate-800 dark:text-slate-200">{status.memory.used} GB</span>
+                <div className="w-full text-xs space-y-1.5 font-medium min-w-0">
+                  <div className="flex justify-between items-center gap-1.5">
+                    <span className="text-slate-500 dark:text-slate-400 shrink-0">Used:</span>
+                    <span className="font-bold font-mono text-slate-800 dark:text-slate-200 text-xs whitespace-nowrap">{status.memory.used} GB</span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-500 dark:text-slate-400">Available</span>
-                    <span className="font-bold text-emerald-600 dark:text-emerald-400 font-mono">
+                  <div className="flex justify-between items-center gap-1.5">
+                    <span className="text-slate-500 dark:text-slate-400 shrink-0">Free:</span>
+                    <span className="font-bold text-emerald-600 dark:text-emerald-400 font-mono text-xs whitespace-nowrap">
                       {status.memory.available || "-"} GB
                     </span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-500 dark:text-slate-400">Total Installed</span>
-                    <span className="font-bold font-mono text-slate-800 dark:text-slate-200">{status.memory.total} GB</span>
+                  <div className="flex justify-between items-center gap-1.5">
+                    <span className="text-slate-500 dark:text-slate-400 shrink-0">Total:</span>
+                    <span className="font-bold font-mono text-slate-800 dark:text-slate-200 text-xs whitespace-nowrap">{status.memory.total} GB</span>
                   </div>
                 </div>
               </div>
 
               {/* Swap Memory Details */}
-              <div className="pt-3 border-t border-slate-100 dark:border-slate-800 text-xs">
+              <div className="pt-2.5 border-t border-slate-100 dark:border-slate-800 text-xs">
                 <div className="flex justify-between items-center mb-1">
-                  <span className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider">
+                  <span className="text-[9px] text-slate-500 dark:text-slate-400 font-semibold uppercase tracking-wider">
                     Swap Partition
                   </span>
-                  <span className="font-mono text-[11px] font-bold text-slate-700 dark:text-slate-300">
-                    {status.memory.swap_used || "0"} / {status.memory.swap_total || "0"} GB ({status.memory.swap_percent || 0}%)
+                  <span className="font-mono text-[10px] font-bold text-slate-700 dark:text-slate-300">
+                    {status.memory.swap_used || "0"} / {status.memory.swap_total || "0"} GB
                   </span>
                 </div>
                 <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden border border-slate-200/50 dark:border-slate-700/50">
@@ -492,6 +505,73 @@ function App() {
                     style={{ width: `${Math.min(status.memory.swap_percent || 0, 100)}%` }}
                   />
                 </div>
+              </div>
+            </div>
+
+            {/* Network Traffic Card */}
+            <div className="bg-white dark:bg-[#111827] rounded-2xl p-4.5 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+              <div className="flex items-center justify-between pb-2.5 border-b border-slate-100 dark:border-slate-800">
+                <div className="flex items-center gap-2">
+                  <FiGlobe className="text-cyan-500 text-lg" />
+                  <h3 className="font-bold text-base text-slate-900 dark:text-slate-100">Network I/O</h3>
+                </div>
+                <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-cyan-50 text-cyan-600 dark:bg-cyan-950/60 dark:text-cyan-400 border border-cyan-200 dark:border-cyan-800 font-mono">
+                  Bandwidth
+                </span>
+              </div>
+
+              {/* Speed Indicators */}
+              <div className="my-2 space-y-2">
+                {/* Download */}
+                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-[#1a2333] border border-slate-200/60 dark:border-slate-700/60">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <div className="p-1 rounded-md bg-emerald-500/10 text-emerald-500 dark:bg-emerald-500/20">
+                        <FiArrowDown className="text-xs font-black" />
+                      </div>
+                      <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">Down</span>
+                    </div>
+                    <span className="text-sm font-black font-mono text-emerald-600 dark:text-emerald-400 whitespace-nowrap">
+                      {status.network?.download_speed || "0.0 KB/s"}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Upload */}
+                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-[#1a2333] border border-slate-200/60 dark:border-slate-700/60">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <div className="p-1 rounded-md bg-cyan-500/10 text-cyan-500 dark:bg-cyan-500/20">
+                        <FiArrowUp className="text-xs font-black" />
+                      </div>
+                      <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">Up</span>
+                    </div>
+                    <span className="text-sm font-black font-mono text-cyan-600 dark:text-cyan-400 whitespace-nowrap">
+                      {status.network?.upload_speed || "0.0 KB/s"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Total Transferred & Top Interface */}
+              <div className="pt-2.5 border-t border-slate-100 dark:border-slate-800 text-xs font-medium space-y-1">
+                <div className="flex justify-between items-center text-slate-500 dark:text-slate-400 text-[11px]">
+                  <span>Recv / Sent</span>
+                  <span className="font-bold font-mono text-slate-800 dark:text-slate-200 text-[10px] whitespace-nowrap">
+                    {status.network?.total_recv || "0 MB"} / {status.network?.total_sent || "0 MB"}
+                  </span>
+                </div>
+                {status.network?.interfaces && status.network.interfaces.length > 0 && (
+                  <div className="flex justify-between items-center text-slate-500 dark:text-slate-400 pt-1 border-t border-slate-100/60 dark:border-slate-800/60 text-[11px]">
+                    <span className="flex items-center gap-1">
+                      <FiWifi className="text-slate-400 text-xs" />
+                      <span className="font-mono">{status.network.interfaces[0].name}</span>
+                    </span>
+                    <span className="font-mono text-[10px] text-cyan-600 dark:text-cyan-400 font-bold whitespace-nowrap">
+                      {status.network.interfaces[0].ip || "Active"}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
 
