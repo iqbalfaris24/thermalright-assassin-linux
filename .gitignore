@@ -1,4 +1,6 @@
 venv
 venv/*
-
+*.pyc
+__pycache__/
 core/__pycache__/
+dashboard-ui/node_modules/

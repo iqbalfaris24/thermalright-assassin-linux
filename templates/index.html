@@ -1,109 +1,307 @@
 <!doctype html>
-<html>
+<html lang="en">
   <head>
-    <title>TRCC</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TRCC - Thermalright Control Center</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/style.css" />
   </head>
 
   <body>
-    <div class="header">TRCC</div>
-
-    <div class="container">
-      <div class="panel lcd">
-        <div class="lcd-box">
-          <div class="labels">
-            <span>CPU</span>
-            <span class="gpu">GPU</span>
+    <!-- Top Modern Navigation Bar -->
+    <header class="app-header">
+      <div class="header-container">
+        <div class="brand">
+          <div class="brand-logo">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="4" y="4" width="16" height="16" rx="2" />
+              <rect x="9" y="9" width="6" height="6" />
+              <line x1="9" y1="1" x2="9" y2="4" />
+              <line x1="15" y1="1" x2="15" y2="4" />
+              <line x1="9" y1="20" x2="9" y2="23" />
+              <line x1="15" y1="20" x2="15" y2="23" />
+              <line x1="20" y1="9" x2="23" y2="9" />
+              <line x1="20" y1="14" x2="23" y2="14" />
+              <line x1="1" y1="9" x2="4" y2="9" />
+              <line x1="1" y1="14" x2="4" y2="14" />
+            </svg>
           </div>
-          <div id="lcdValue" class="value">85</div>
-          <div class="units">
-            <span id="unitC">°C</span>
-            <span id="unitF">°F</span>
-            <span>%</span>
+          <div class="brand-text">
+            <div class="title">TRCC <span class="badge">PRO</span></div>
+            <div class="subtitle">Thermalright Assassin LCD Driver</div>
           </div>
         </div>
-      </div>
 
-      <div class="panel control-panel">
-        <div class="setting-group">
-          <h3>Color Mode</h3>
-          <div class="temp-legend">
-            <span style="background: #00ffff"></span><30
-            <span style="background: #00ff00"></span><50
-            <span style="background: #ffff00"></span><70
-            <span style="background: #ff8800"></span><90
-            <span style="background: #ff0000"></span>90+
+        <div class="header-actions">
+          <div class="device-status">
+            <span class="status-indicator live-pulse"></span>
+            <span class="status-text">HARDWARE CONNECTED</span>
           </div>
-          <br />
-          <div class="color-modes">
-            <button data-color-mode="static" onclick="setColorMode('static')">
-              Static
-            </button>
-            <button
-              data-color-mode="temperature"
-              onclick="setColorMode('temperature')"
-            >
-              According to temperature
-            </button>
+          {% if full_dashboard %}
+          <a href="/dashboard/" class="btn-dashboard">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="7" />
+              <rect x="14" y="3" width="7" height="7" />
+              <rect x="14" y="14" width="7" height="7" />
+              <rect x="3" y="14" width="7" height="7" />
+            </svg>
+            <span>Full System Dashboard</span>
+          </a>
+          {% endif %}
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-wrapper">
+      <div class="app-layout">
+
+        <!-- Left Column: Realistic Physical Cooler LCD Simulator -->
+        <div class="lcd-column">
+          <div class="cooler-shroud">
+            <div class="cooler-header">
+              <span class="cooler-brand">THERMALRIGHT</span>
+              <span class="cooler-model">PEERLESS ASSASSIN</span>
+            </div>
+
+            <!-- Virtual Physical Screen -->
+            <div class="lcd-bezel">
+              <div class="lcd-screen" id="lcdScreen">
+                <div class="screen-glare"></div>
+                <div class="screen-labels">
+                  <span id="lcdCpuLabel" class="sensor-tag active">CPU</span>
+                  <span id="lcdGpuLabel" class="sensor-tag">GPU</span>
+                </div>
+                
+                <div class="screen-value-wrapper">
+                  <div id="lcdValue" class="screen-value">--</div>
+                </div>
+
+                <div class="screen-units">
+                  <span id="unitC" class="unit-tag active">°C</span>
+                  <span id="unitF" class="unit-tag">°F</span>
+                  <span id="unitPct" class="unit-tag">%</span>
+                </div>
+
+                <div class="screen-footer">
+                  <div id="liveStatus" class="live-tag">
+                    <span class="dot">●</span> REALTIME LCD
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="cooler-footer">
+              <div class="screw screw-left"></div>
+              <div class="vent-lines">
+                <span></span><span></span><span></span><span></span>
+              </div>
+              <div class="screw screw-right"></div>
+            </div>
           </div>
-          <br />
-          <div class="color-input">
-            <input type="color" id="colorPicker" />
-            <div class="presets">
-              <div
-                style="background: #ff0000"
-                onclick="setColor('ff0000')"
-              ></div>
-              <div
-                style="background: #00ff00"
-                onclick="setColor('00ff00')"
-              ></div>
-              <div
-                style="background: #0000ff"
-                onclick="setColor('0000ff')"
-              ></div>
-              <div
-                style="background: #ffffff"
-                onclick="setColor('ffffff')"
-              ></div>
+
+          <!-- Quick Preview Info -->
+          <div class="quick-status-card">
+            <div class="quick-item">
+              <span class="quick-label">CPU Temp</span>
+              <span class="quick-val text-cyan" id="quickCpuTemp">--°C</span>
+            </div>
+            <div class="quick-divider"></div>
+            <div class="quick-item">
+              <span class="quick-label">GPU Temp</span>
+              <span class="quick-val text-purple" id="quickGpuTemp">--°C</span>
+            </div>
+            <div class="quick-divider"></div>
+            <div class="quick-item">
+              <span class="quick-label">CPU Load</span>
+              <span class="quick-val text-emerald" id="quickCpuLoad">--%</span>
             </div>
           </div>
         </div>
 
-        <div class="setting-group">
-          <h3>Mode</h3>
-          <div class="modes">
-            <button data-mode="cpu" onclick="setMode('cpu')">CPU</button>
-            <button data-mode="gpu" onclick="setMode('gpu')">GPU</button>
-            <button data-mode="alternate" onclick="setMode('alternate')">
-              ALT
-            </button>
-            <button data-mode="cpu_usage" onclick="setMode('cpu_usage')">
-              USAGE
-            </button>
+        <!-- Right Column: Premium Glassmorphism Control Panel -->
+        <div class="controls-column">
+          <div class="card-panel">
+            
+            <!-- Section 1: Color Mode & Lighting Profile -->
+            <div class="control-group">
+              <div class="group-header">
+                <div class="group-icon icon-gold">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/></svg>
+                </div>
+                <div>
+                  <h3 class="group-title">Lighting & Color Mode</h3>
+                  <p class="group-desc">Pilih skema warna statis atau dynamic temperature-reactive.</p>
+                </div>
+              </div>
+
+              <div class="color-modes-tabs">
+                <button data-color-mode="static" class="tab-btn" onclick="setColorMode('static')">
+                  <span class="tab-icon">✦</span>
+                  <span>Static Color</span>
+                </button>
+                <button data-color-mode="temperature" class="tab-btn" onclick="setColorMode('temperature')">
+                  <span class="tab-icon">🌡️</span>
+                  <span>Temperature Reactive</span>
+                </button>
+              </div>
+
+              <!-- Temperature Legend Thresholds -->
+              <div class="temp-legend-box" id="tempLegendBox">
+                <div class="legend-header">
+                  <span>Dynamic Reactive Gradient</span>
+                  <span class="legend-badge">Auto Color</span>
+                </div>
+                <div class="legend-steps">
+                  <div class="legend-step"><span class="color-pill" style="background: #00ffff; box-shadow: 0 0 8px #00ffff88;"></span> <span class="step-label">&lt; 30°C</span></div>
+                  <div class="legend-step"><span class="color-pill" style="background: #00ff00; box-shadow: 0 0 8px #00ff0088;"></span> <span class="step-label">&lt; 50°C</span></div>
+                  <div class="legend-step"><span class="color-pill" style="background: #ffff00; box-shadow: 0 0 8px #ffff0088;"></span> <span class="step-label">&lt; 70°C</span></div>
+                  <div class="legend-step"><span class="color-pill" style="background: #ff8800; box-shadow: 0 0 8px #ff880088;"></span> <span class="step-label">&lt; 90°C</span></div>
+                  <div class="legend-step"><span class="color-pill" style="background: #ff0000; box-shadow: 0 0 8px #ff000088;"></span> <span class="step-label">90°C+</span></div>
+                </div>
+              </div>
+
+              <!-- Static Color Palette & Custom Picker -->
+              <div class="color-palette-box" id="colorPaletteBox">
+                <label class="palette-label">Preset Colors & Custom Hex</label>
+                <div class="palette-wrapper">
+                  <div class="presets-row">
+                    <button type="button" class="preset-btn" style="--c: #ff0000;" onclick="setColor('ff0000')" title="Vibrant Red"></button>
+                    <button type="button" class="preset-btn" style="--c: #00ff00;" onclick="setColor('00ff00')" title="Matrix Green"></button>
+                    <button type="button" class="preset-btn" style="--c: #0088ff;" onclick="setColor('0088ff')" title="Cyber Blue"></button>
+                    <button type="button" class="preset-btn" style="--c: #00ffff;" onclick="setColor('00ffff')" title="Neon Cyan"></button>
+                    <button type="button" class="preset-btn" style="--c: #ff8800;" onclick="setColor('ff8800')" title="Thermal Orange"></button>
+                    <button type="button" class="preset-btn" style="--c: #aa00ff;" onclick="setColor('aa00ff')" title="Purple Glow"></button>
+                    <button type="button" class="preset-btn" style="--c: #ffffff;" onclick="setColor('ffffff')" title="Pure White"></button>
+                  </div>
+                  
+                  <div class="custom-color-field">
+                    <div class="color-picker-btn-wrap">
+                      <input type="color" id="colorPicker" />
+                    </div>
+                    <span class="color-code" id="colorCodeText">#FF0000</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <!-- Section 2: Display Mode & Sensor Source -->
+            <div class="control-group">
+              <div class="group-header">
+                <div class="group-icon icon-blue">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                </div>
+                <div>
+                  <h3 class="group-title">Display Telemetry Mode</h3>
+                  <p class="group-desc">Tentukan parameter sensor yang diproyeksikan pada layar LCD.</p>
+                </div>
+              </div>
+
+              <div class="modes-grid">
+                <button data-mode="cpu" class="mode-card" onclick="setMode('cpu')">
+                  <div class="mode-card-header">
+                    <span class="mode-code">CPU</span>
+                    <span class="mode-check">✓</span>
+                  </div>
+                  <span class="mode-name">Processor Temp</span>
+                </button>
+
+                <button data-mode="gpu" class="mode-card" onclick="setMode('gpu')">
+                  <div class="mode-card-header">
+                    <span class="mode-code">GPU</span>
+                    <span class="mode-check">✓</span>
+                  </div>
+                  <span class="mode-name">Graphics Card Temp</span>
+                </button>
+
+                <button data-mode="alternate" class="mode-card" onclick="setMode('alternate')">
+                  <div class="mode-card-header">
+                    <span class="mode-code">ALT</span>
+                    <span class="mode-check">✓</span>
+                  </div>
+                  <span class="mode-name">CPU & GPU Cycle</span>
+                </button>
+
+                <button data-mode="cpu_usage" class="mode-card" onclick="setMode('cpu_usage')">
+                  <div class="mode-card-header">
+                    <span class="mode-code">LOAD</span>
+                    <span class="mode-check">✓</span>
+                  </div>
+                  <span class="mode-name">CPU Utilization %</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="section-divider"></div>
+
+            <!-- Section 3: Unit & Interval Settings -->
+            <div class="dual-settings-row">
+              
+              <!-- Temperature Unit Toggle -->
+              <div class="setting-item">
+                <div class="item-label">
+                  <span class="label-title">Temperature Unit</span>
+                  <span class="label-hint">Celsius / Fahrenheit</span>
+                </div>
+                <div class="unit-segmented-control">
+                  <div id="cBtn" class="seg-btn active" onclick="setUnit('celsius')">
+                    <span>°C</span>
+                    <small>Celsius</small>
+                  </div>
+                  <div id="fBtn" class="seg-btn" onclick="setUnit('fahrenheit')">
+                    <span>°F</span>
+                    <small>Fahrenheit</small>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Alternate Switch Interval Slider -->
+              <div class="setting-item">
+                <div class="item-label">
+                  <span class="label-title">Alternate Cycle Interval</span>
+                  <span class="label-hint" id="intervalValue">3 seconds</span>
+                </div>
+                <div class="slider-wrapper">
+                  <div class="slider-track-box">
+                    <input id="interval" type="range" min="1" max="10" step="1" value="3" />
+                    <div class="slider-ticks-container">
+                      <span class="tick-label" style="left: 0%;">1s</span>
+                      <span class="tick-label" style="left: 22.22%;">3s</span>
+                      <span class="tick-label" style="left: 44.44%;">5s</span>
+                      <span class="tick-label" style="left: 66.66%;">7s</span>
+                      <span class="tick-label" style="left: 100%;">10s</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Footer Save Bar -->
+            <div class="panel-action-footer">
+              <div class="save-status-msg" id="saveMsg">All settings synced with driver.</div>
+              <button class="btn-save" onclick="save()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+                  <polyline points="17 21 17 13 7 13 7 21"/>
+                  <polyline points="7 3 7 8 15 8"/>
+                </svg>
+                <span>Save Hardware Config</span>
+              </button>
+            </div>
+
           </div>
         </div>
 
-        <div class="setting-group">
-          <h3>Unit</h3>
-          <div class="unit-toggle">
-            <div id="cBtn" onclick="setUnit('celsius')">°C</div>
-            <div id="fBtn" onclick="setUnit('fahrenheit')">°F</div>
-          </div>
-        </div>
-
-        <div class="setting-group">
-          <h3>Interval</h3>
-          <div class="slider-box">
-            <input id="interval" type="range" min="1" max="10" />
-            <span id="intervalValue">3s</span>
-          </div>
-        </div>
-
-        <button class="save" onclick="save()">SAVE</button>
       </div>
-    </div>
+    </main>
 
+    <!-- App Script -->
     <script src="/static/app.js"></script>
   </body>
 </html>

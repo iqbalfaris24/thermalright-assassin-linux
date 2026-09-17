@@ -13,7 +13,8 @@ class Device:
     def connect(self):
         while True:
             try:
-                self.dev = hid.Device(VENDOR_ID, PRODUCT_ID)
+                self.dev = hid.device()
+                self.dev.open(VENDOR_ID, PRODUCT_ID)
                 print("Device connected")
                 break
             except Exception as e:
